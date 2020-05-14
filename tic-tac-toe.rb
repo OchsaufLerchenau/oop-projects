@@ -1,12 +1,11 @@
 class Game
   def initialize
-    #array of values
-    @grid = [
+    @grid = [   #empty grid to start
       [" ", " ", " "],
       [" ", " ", " "],
       [" ", " ", " "]
     ]
-
+    
     #initialize players
     puts "Insert name for player \"X\": "
     p1 = gets.chomp.to_s
@@ -23,20 +22,8 @@ class Game
 
   private
 
-  def play_game
-    print_grid
-    until has_won? || grid_full?
-      play_round
-    end
-    if has_won?
-      puts "\nAnd the winner is:\nPlayer \"#{@current_player.sign}\": called: #{@current_player.name}!"
-    else
-      puts "\nThis is a draw."
-    end
-  end
-
-  #Exception handler to make sure the inputs are correct
-  def input_check
+  #Takes an input and checks if correct (numbers 1-3)
+  def input_and_check
     begin
       num = Kernel.gets.match(/^[1-3]$/)[0]
     rescue
@@ -60,18 +47,16 @@ class Game
   def put_mark
     puts "\nPlayer \"#{@current_player.sign}\": #{@current_player.name}"
     puts "Which column?"
-    column = input_check
+    column = input_and_check
     puts "Which row?"
-    row = input_check
-
-    #check if field is empty
-    if @grid[row][column].match(/[\s]/) #match default/empty grid value
+    row = input_and_check
+    if @grid[row][column].match(/[\s]/) #check if field is empty/default
       @grid[row][column] = @current_player.sign
       print_grid
     else
       puts "\n\n\nAlas, that field is already taken. Try again:"
       print_grid
-      put_mark
+      put_mark #recursively goes back if field not empty
     end
   end
 
@@ -84,13 +69,14 @@ class Game
   end
 
   def play_round
+    #starting from switch_player to make winner display correctly
     switch_player
     put_mark
   end
 
   def has_won?
     #loop to check win conditions.
-    #Left accross conditions stay in loop for ease of coding,
+    #Left accross conditions in loop for ease of coding,
     #despite unnecessary checks
     3.times do |i|
       if (
@@ -123,7 +109,7 @@ class Game
   end
 
   def grid_full?
-    if (
+    if ( #check for default values existing in grid
       @grid[0].include?(" ") ||
       @grid[1].include?(" ") ||
       @grid[2].include?(" ")
@@ -133,9 +119,23 @@ class Game
       return true
     end
   end
+
+  def play_game
+    print_grid
+    until has_won? || grid_full?
+      play_round
+    end
+    if has_won?
+      puts "\nAnd the winner is:"
+      print "Player \"#{@current_player.sign}\": "
+      puts "called: #{@current_player.name}!"
+    else
+      puts "\nThis is a draw."
+    end
+  end
 end
 
-class Player# < Game
+class Player
   attr_reader :name, :sign
   def initialize(name, sign)
     @name = name
