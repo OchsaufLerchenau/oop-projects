@@ -10,7 +10,7 @@ class Game
     puts "Insert name for player \"X\": "
     p1 = gets.chomp.to_s
     @player1 = Player.new(p1, "X")
-    puts "Insert name for player \"O\": "
+   skdjfhskdjfh puts "Insert name for player \"O\": "
     p2 = gets.chomp.to_s
     @player2 = Player.new(p2, "O")
 
@@ -114,9 +114,9 @@ class Game
       @grid[1].include?(" ") ||
       @grid[2].include?(" ")
     )
-      return false
+      false
     else
-      return true
+      true
     end
   end
 
