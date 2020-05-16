@@ -71,6 +71,11 @@ class Game
     until has_won?
       play_round
     end
+    if has_won?
+      puts "Congratulations, you beat the machine!"
+    else
+      puts "Comiserations, you lost :("
+    end
   end
-  
+
 end
