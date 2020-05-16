@@ -70,4 +70,7 @@ class Game
   def play_game
     until has_won?
       play_round
+    end
+  end
+  
 end
