@@ -1,6 +1,4 @@
-load 'game.rb'
-
-class Player < Game
+class Player
   include Operations
   attr_reader :name
 

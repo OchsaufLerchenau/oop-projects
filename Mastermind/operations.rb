@@ -9,18 +9,6 @@ module Operations
     arr
   end
 
-  def peg_check(pattern, to_check)
-    arr = []
-    4.times do |i|
-      if pattern[i] == to_check[i]
-        arr.push("black")
-      elsif pattern[i] != to_check[i] && pattern.include?(to_check[i])
-        arr.push("white")
-      end
-    end
-    arr
-  end
-
   def display_poss_pegs
     POSS_COLORS.each_with_index do |color, idx|
       print "#{idx + 1}: " + color + "    "
@@ -34,8 +22,8 @@ module Operations
       input.to_i - 1
     elsif POSS_COLORS.include?(input.downcase)
       POSS_COLORS.index(input.downcase)
-    elsif input == "reset"
-      input
+    elsif input == "reset".downcase
+      input.downcase
     else
       puts "Wrong input. Try again!"
       input_check
@@ -49,7 +37,7 @@ module Operations
     puts "You can write color numbers or names, type reset to restart."
     4.times do |i|
       input = input_check
-      if input == "reset".downcase
+      if input == "reset"
         peg_input
       else
         peg_choice.push(POSS_COLORS[input.to_i])
