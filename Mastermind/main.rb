@@ -1,11 +1,11 @@
 load 'operations.rb'
+load 'computer-ai.rb'
 load 'player.rb'
 load 'game.rb'
 
-puts "Input your name:"
-player = Player.new(gets.chomp)
+player = Player.new("Player")
 computer = Player.new("Computer")
 game = Game.new(player, computer)
 game.create_pattern_peg_set(computer)
 game.create_board
-game.play_game
+game.iterate_colors

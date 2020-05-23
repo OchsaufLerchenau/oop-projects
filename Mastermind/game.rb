@@ -1,5 +1,6 @@
 require 'pry'
-class Game
+
+class Game < AI
   include Operations
 
   def initialize(player, computer)
@@ -8,6 +9,7 @@ class Game
     @peg_pattern = []
     @round_count = 0
     @has_won = false
+    @computer_plays = true
   end
 
   def create_board
@@ -33,7 +35,11 @@ class Game
       puts "\nCongratulations, you beat the machine!\n\n"
     else
       puts "\nComiserations, you lost :(\n"
-      puts "The computers peg set was: #{@peg_pattern}\n\n"
+      if @computer_plays
+        puts "You got beat at difficulty level: \"#{@diff_level}\""
+      else
+        puts "The computers peg set was: #{@peg_pattern}\n\n"
+      end
     end
   end
 
@@ -92,8 +98,12 @@ class Game
 
   def play_round
     @round_count += 1
-    puts "Make a guess:"
-    input = peg_input
+    unless @computer_plays
+      puts "Make a guess:"
+      input = peg_input
+    else
+      input = comp_play
+    end
     @board[@round_count - 1][0] = input
     @board[@round_count - 1][1] = peg_check(@peg_pattern, input)
     print_board
