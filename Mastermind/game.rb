@@ -2,6 +2,7 @@ require 'pry'
 
 class Game < AI
   include Operations
+  @@all_peg_sets = create_all_possibilities
 
   def initialize(player, computer)
     @player = player
@@ -13,14 +14,9 @@ class Game < AI
     @possible_peg_sets = []
   end
 
-  def create_board
-    @board = []
-    12.times do |i|
-      @board.push([["      ", "      ", "      ", "      "], []])
-    end
-  end
 
   def play_game
+    create_board
     maker_or_breaker
     until @has_won || @round_count == 12 do
       play_round
@@ -30,7 +26,7 @@ class Game < AI
     else
       puts "\nComiserations, you lost :(\n"
       if @computer_plays
-        puts "You got beat at difficulty level: \"#{@diff_level}\""
+        puts "You got beat!"
       else
         puts "The computers peg set was: #{@peg_pattern}\n\n"
       end
@@ -47,7 +43,12 @@ class Game < AI
     end
   end
   
-  
+  def create_board
+    @board = []
+    12.times do |i|
+      @board.push([["      ", "      ", "      ", "      "], []])
+    end
+  end
 
   def print_board
     @board.each do |peg_set|
@@ -65,8 +66,13 @@ class Game < AI
       puts "Make a guess:"
       input = peg_input
     else
-      comp_play_check = comp_play
-      input = comp_play
+      if round_count == 1
+        a = POSS_COLORS[rand(6)]
+        b = POSS_COLORS[rand(6)]
+        input = [a, a, b, b]
+      else
+        input = comp_play
+      end
     end
     @board[@round_count - 1][0] = input
     @board[@round_count - 1][1] = peg_check(@peg_pattern, input)
@@ -85,9 +91,28 @@ class Game < AI
     elsif choice.downcase == "maker"
       create_pattern_peg_set(@player)
       @computer_plays = true
+      @possible_peg_sets = create_all_possibilities
     else
       puts "Wrong input, try again..."
       maker_or_breaker
     end
+  end
+
+  def delete_impossible_sets
+    diminished_peg_sets = []
+    @possible_peg_sets.each do |set|
+      if (
+        peg_check(@board[@round_count - 2][0], set) == 
+        @board[@round_count - 2][1]
+      )
+      diminished_peg_sets.push(@board[@round_count - 2][0])
+      end
+    end
+    @possible_peg_sets = diminished_peg_sets
+  end
+
+  def computer_play
+    delete_impossible_sets
+    @possible_peg_sets[rand(possible_peg_sets.length)]
   end
 end
