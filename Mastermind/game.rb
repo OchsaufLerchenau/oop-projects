@@ -9,7 +9,7 @@ class Game < AI
     @peg_pattern = []
     @round_count = 0
     @has_won = false
-    @computer_plays = true
+    @computer_plays = false
   end
 
   def create_board
@@ -69,22 +69,6 @@ class Game < AI
     formatted_set
   end
 
-  def peg_check(pattern, to_check)
-    arr = []
-    pattern_counts = Hash.new(0)
-    to_check_counts = Hash.new(0)
-
-    pattern.each { |color| pattern_counts[color] += 1 }
-    to_check.each { |color| to_check_counts[color] += 1 }
-
-    arr = white_peg_check(pattern_counts, to_check_counts, arr)
-    arr = black_peg_check(pattern, to_check, arr)
-
-    if arr == ["black", "black", "black", "black"]
-      @has_won = true
-    end
-    arr.shuffle
-  end
 
   def print_board
     @board.each do |peg_set|
@@ -106,6 +90,10 @@ class Game < AI
     end
     @board[@round_count - 1][0] = input
     @board[@round_count - 1][1] = peg_check(@peg_pattern, input)
+
+    if @board[@round_count - 1][1] == ["black", "black", "black", "black"]
+      @has_won = true
+    end
     print_board
   end
 end

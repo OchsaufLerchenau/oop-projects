@@ -8,10 +8,6 @@ class AI
   def comp_play
   end
 
-  def iterate_colors
-    POSS_COLORS.each { |color| color }
-  end
-
   def create_all_possibilities
     possible_peg_sets = []
     6.times do |a|

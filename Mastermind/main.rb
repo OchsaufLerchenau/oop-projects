@@ -8,4 +8,4 @@ computer = Player.new("Computer")
 game = Game.new(player, computer)
 game.create_pattern_peg_set(computer)
 game.create_board
-game.iterate_colors
+game.play_game

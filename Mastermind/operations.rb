@@ -68,4 +68,17 @@ module Operations
     end
     arr
   end
+
+  def peg_check(pattern, to_check)
+    arr = []
+    pattern_counts = Hash.new(0)
+    to_check_counts = Hash.new(0)
+
+    pattern.each { |color| pattern_counts[color] += 1 }
+    to_check.each { |color| to_check_counts[color] += 1 }
+
+    arr = white_peg_check(pattern_counts, to_check_counts, arr)
+    arr = black_peg_check(pattern, to_check, arr)
+    arr.shuffle
+  end
 end
