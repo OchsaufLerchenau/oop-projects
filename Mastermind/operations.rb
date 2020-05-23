@@ -45,4 +45,28 @@ module Operations
     end
     p peg_choice
   end
+
+  def white_peg_check(pattern_counts, to_check_counts, arr)
+    to_check_counts.each_key do |color|
+      if pattern_counts[color]
+        if pattern_counts[color] >= to_check_counts[color]
+          p to_check_counts[color]
+          to_check_counts[color].times { arr.push("white") }
+        elsif pattern_counts[color] < to_check_counts[color]
+          pattern_counts[color].times { arr.push("white") }
+        end
+      end
+    end
+    arr
+  end
+
+  def black_peg_check(pattern, to_check, arr)
+    4.times do |i|
+      if pattern[i] == to_check[i]
+        arr.pop
+        arr.unshift("black")
+      end
+    end
+    arr
+  end
 end

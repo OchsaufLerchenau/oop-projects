@@ -1,3 +1,4 @@
+require 'pry'
 class Game
   include Operations
 
@@ -19,7 +20,7 @@ class Game
   def create_pattern_peg_set(player)
     if player.name == "Computer"
       @peg_pattern = random_peg_array
-      p @peg_pattern
+      # p @peg_pattern
     else
       @peg_pattern = peg_input
     end
@@ -69,20 +70,9 @@ class Game
 
     pattern.each { |color| pattern_counts[color] += 1 }
     to_check.each { |color| to_check_counts[color] += 1 }
-    to_check_counts.each_key do |color|
-      if pattern_counts[color] >= to_check_counts[color]
-        to_check_counts[color].times { arr.push("white") }
-      elsif pattern_counts[color] < to_check_counts[color]
-        pattern_counts[color].times { arr.push("white") }
-      end
-    end
 
-    4.times do |i|
-      if pattern[i] == to_check[i]
-        arr.pop
-        arr.push("black")
-      end
-    end
+    arr = white_peg_check(pattern_counts, to_check_counts, arr)
+    arr = black_peg_check(pattern, to_check, arr)
 
     if arr == ["black", "black", "black", "black"]
       @has_won = true
