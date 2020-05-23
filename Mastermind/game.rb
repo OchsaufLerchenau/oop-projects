@@ -1,8 +1,7 @@
 require 'pry'
 
-class Game < AI
+class Game
   include Operations
-  @@all_peg_sets = create_all_possibilities
 
   def initialize(player, computer)
     @player = player
@@ -12,8 +11,15 @@ class Game < AI
     @has_won = false
     @computer_plays = false
     @possible_peg_sets = []
-  end
+    @all_peg_sets = create_all_possibilities
+    @all_scores = Hash.new { |h, k| h[k] = {} }
 
+    @all_peg_sets.product(@all_peg_sets).each do |guess, answer|
+      @all_scores[guess][answer] = peg_check(guess, answer)
+    end
+
+    @all_peg_sets = @all_peg_sets.to_set
+  end
 
   def play_game
     create_board
@@ -33,7 +39,7 @@ class Game < AI
     end
   end
 
-  private
+  # private
 
   def create_pattern_peg_set(player)
     if player.name == "Computer"
@@ -66,12 +72,10 @@ class Game < AI
       puts "Make a guess:"
       input = peg_input
     else
-      if round_count == 1
-        a = POSS_COLORS[rand(6)]
-        b = POSS_COLORS[rand(6)]
-        input = [a, a, b, b]
+      if @round_count == 1
+        input = ["red", "red", "orange", "orange"]
       else
-        input = comp_play
+        input = computer_play
       end
     end
     @board[@round_count - 1][0] = input
@@ -91,16 +95,15 @@ class Game < AI
     elsif choice.downcase == "maker"
       create_pattern_peg_set(@player)
       @computer_plays = true
-      @possible_peg_sets = create_all_possibilities
     else
       puts "Wrong input, try again..."
       maker_or_breaker
     end
   end
 
-  def delete_impossible_sets
+  def reduce_sets
     diminished_peg_sets = []
-    @possible_peg_sets.each do |set|
+    @all_peg_sets.each do |set|
       if (
         peg_check(@board[@round_count - 2][0], set) == 
         @board[@round_count - 2][1]
@@ -109,10 +112,12 @@ class Game < AI
       end
     end
     @possible_peg_sets = diminished_peg_sets
+    p @possible_peg_sets.length
   end
 
   def computer_play
-    delete_impossible_sets
-    @possible_peg_sets[rand(possible_peg_sets.length)]
+    @possible_peg_sets = @all_peg_sets.dup
+    @possible_scores = @all_scores.dup
+    
   end
 end
