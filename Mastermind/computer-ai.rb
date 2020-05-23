@@ -24,7 +24,7 @@ class AI
               POSS_COLORS[b],
               POSS_COLORS[c],
               POSS_COLORS[d]
-            )
+              )
             possible_peg_sets.push(temp_arr)
           end
         end
