@@ -1,13 +1,11 @@
-require 'pry'
 class Game
   include Operations
-
-  @@round_count = 0
 
   def initialize(player, computer)
     @player = player
     @computer = computer
     @peg_pattern = []
+    @round_count = 0
     @has_won = false
   end
 
@@ -38,7 +36,7 @@ class Game
     end
   end
 
-  private
+  # private
   
   def format_color_name(color_name)
     (8 - color_name.length).times do |i|
@@ -66,13 +64,26 @@ class Game
 
   def peg_check(pattern, to_check)
     arr = []
+    pattern_counts = Hash.new(0)
+    to_check_counts = Hash.new(0)
+
+    pattern.each { |color| pattern_counts[color] += 1 }
+    to_check.each { |color| to_check_counts[color] += 1 }
+    to_check_counts.each_key do |color|
+      if pattern_counts[color] >= to_check_counts[color]
+        to_check_counts[color].times { arr.push("white") }
+      elsif pattern_counts[color] < to_check_counts[color]
+        pattern_counts[color].times { arr.push("white") }
+      end
+    end
+
     4.times do |i|
-      if pattern[i] != to_check[i] && pattern.include?(to_check[i])
-        arr.push("white")
-      elsif pattern[i] == to_check[i]
+      if pattern[i] == to_check[i]
+        arr.pop
         arr.push("black")
       end
     end
+
     if arr == ["black", "black", "black", "black"]
       @has_won = true
     end
@@ -91,11 +102,11 @@ class Game
   end
 
   def play_round
-    @@round_count += 1
+    @round_count += 1
     puts "Make a guess: #{@peg_pattern}"
     input = peg_input
-    puts @board[@@round_count - 1][0] = input
-    puts @board[@@round_count - 1][1] = peg_check(@peg_pattern, input)
+    puts @board[@round_count - 1][0] = input
+    puts @board[@round_count - 1][1] = peg_check(@peg_pattern, input)
     print_board
   end
 
