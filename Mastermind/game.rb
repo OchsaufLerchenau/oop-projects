@@ -10,6 +10,7 @@ class Game < AI
     @round_count = 0
     @has_won = false
     @computer_plays = false
+    @possible_peg_sets = []
   end
 
   def create_board
@@ -19,15 +20,8 @@ class Game < AI
     end
   end
 
-  def create_pattern_peg_set(player)
-    if player.name == "Computer"
-      @peg_pattern = random_peg_array
-    else
-      @peg_pattern = peg_input
-    end
-  end
-
   def play_game
+    maker_or_breaker
     until @has_won || @round_count == 12 do
       play_round
     end
@@ -44,31 +38,16 @@ class Game < AI
   end
 
   private
+
+  def create_pattern_peg_set(player)
+    if player.name == "Computer"
+      @peg_pattern = random_peg_array
+    else
+      @peg_pattern = peg_input
+    end
+  end
   
-  def format_color_name(color_name)
-    (8 - color_name.length).times do |i|
-      if i.even?
-        color_name += " "
-      else
-        color_name = " " + color_name
-      end
-    end
-    color_name
-  end
-
-  def format_peg_set(four_item_array)
-    new_peg_array = []
-    formatted_set = ""
-    four_item_array.each do |color_name|
-      new_peg_array.push(format_color_name(color_name))
-    end
-    formatted_set += new_peg_array[0]
-    3.times do |i|
-      formatted_set += "|" + new_peg_array[i + 1] 
-    end
-    formatted_set
-  end
-
+  
 
   def print_board
     @board.each do |peg_set|
@@ -86,6 +65,7 @@ class Game < AI
       puts "Make a guess:"
       input = peg_input
     else
+      comp_play_check = comp_play
       input = comp_play
     end
     @board[@round_count - 1][0] = input
@@ -95,5 +75,19 @@ class Game < AI
       @has_won = true
     end
     print_board
+  end
+
+  def maker_or_breaker
+    puts "Do you want to be the breaker or maker?"
+    choice = gets.chomp
+    if choice.downcase == "breaker"
+      create_pattern_peg_set(@computer)
+    elsif choice.downcase == "maker"
+      create_pattern_peg_set(@player)
+      @computer_plays = true
+    else
+      puts "Wrong input, try again..."
+      maker_or_breaker
+    end
   end
 end

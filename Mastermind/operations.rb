@@ -15,6 +15,31 @@ module Operations
     end
     puts
   end
+  
+  def format_color_name(color_name)
+    (8 - color_name.length).times do |i|
+      if i.even?
+        color_name += " "
+      else
+        color_name = " " + color_name
+      end
+    end
+    color_name
+  end
+
+  def format_peg_set(four_item_array)
+    new_peg_array = []
+    formatted_set = ""
+    four_item_array.each do |color_name|
+      new_peg_array.push(format_color_name(color_name))
+    end
+    formatted_set += new_peg_array[0]
+    3.times do |i|
+      formatted_set += "|" + new_peg_array[i + 1] 
+    end
+    formatted_set
+  end
+
 
   def input_check
     input = gets.chomp
@@ -80,5 +105,26 @@ module Operations
     arr = white_peg_check(pattern_counts, to_check_counts, arr)
     arr = black_peg_check(pattern, to_check, arr)
     arr.shuffle
+  end
+
+  def create_all_possibilities
+    possible_peg_sets = []
+    6.times do |a|
+      6.times do |b|
+        6.times do |c|
+          6. times do |d|  
+            temp_arr = []
+            temp_arr.push(
+              POSS_COLORS[a],
+              POSS_COLORS[b],
+              POSS_COLORS[c],
+              POSS_COLORS[d]
+              )
+            possible_peg_sets.push(temp_arr)
+          end
+        end
+      end
+    end
+    possible_peg_sets
   end
 end
