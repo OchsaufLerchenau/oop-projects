@@ -20,24 +20,24 @@ class Game
   def create_pattern_peg_set(player)
     if player.name == "Computer"
       @peg_pattern = random_peg_array
-      # p @peg_pattern
     else
       @peg_pattern = peg_input
     end
   end
 
   def play_game
-    until @has_won do
+    until @has_won || @round_count == 12 do
       play_round
     end
     if @has_won
       puts "\nCongratulations, you beat the machine!\n\n"
     else
-      puts "\nComiserations, you lost :(\n\n"
+      puts "\nComiserations, you lost :(\n"
+      puts "The computers peg set was: #{@peg_pattern}\n\n"
     end
   end
 
-  # private
+  private
   
   def format_color_name(color_name)
     (8 - color_name.length).times do |i|
@@ -81,7 +81,6 @@ class Game
   end
 
   def print_board
-    puts @board[0][1]
     @board.each do |peg_set|
       if peg_set[1] == []
         puts format_peg_set(peg_set[0])
@@ -93,11 +92,10 @@ class Game
 
   def play_round
     @round_count += 1
-    puts "Make a guess: #{@peg_pattern}"
+    puts "Make a guess:"
     input = peg_input
-    puts @board[@round_count - 1][0] = input
-    puts @board[@round_count - 1][1] = peg_check(@peg_pattern, input)
+    @board[@round_count - 1][0] = input
+    @board[@round_count - 1][1] = peg_check(@peg_pattern, input)
     print_board
   end
-
 end

@@ -43,14 +43,13 @@ module Operations
         peg_choice.push(POSS_COLORS[input.to_i])
       end
     end
-    p peg_choice
+    peg_choice
   end
 
   def white_peg_check(pattern_counts, to_check_counts, arr)
     to_check_counts.each_key do |color|
       if pattern_counts[color]
         if pattern_counts[color] >= to_check_counts[color]
-          p to_check_counts[color]
           to_check_counts[color].times { arr.push("white") }
         elsif pattern_counts[color] < to_check_counts[color]
           pattern_counts[color].times { arr.push("white") }
