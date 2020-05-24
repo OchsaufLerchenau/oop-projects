@@ -17,8 +17,23 @@ class Game
     @all_peg_sets.product(@all_peg_sets).each do |guess, answer|
       @all_scores[guess][answer] = peg_check(guess, answer)
     end
+    # @hash = Hash.new(0)
+    # @all_scores[["red","red","red","red"]].each_value do |val|
+    #   @hash[val] += 1
+    # end
+    # p @hash
+  end
 
-    @all_peg_sets = @all_peg_sets.to_set
+  def minimax
+    uphash = {}
+    @possible_scores.each do |key, val|
+      hash = Hash.new(0)
+      val.each_value do |value|
+        hash[value] += 1
+      end
+      uphash[key] = hash.values.max
+    end
+    uphash.key(uphash.values.min)
   end
 
   def play_game
