@@ -17,23 +17,13 @@ class Game
     @all_peg_sets.product(@all_peg_sets).each do |guess, answer|
       @all_scores[guess][answer] = peg_check(guess, answer)
     end
+    @possible_peg_sets = @all_peg_sets.dup
+    @possible_scores = @all_scores.dup
     # @hash = Hash.new(0)
     # @all_scores[["red","red","red","red"]].each_value do |val|
     #   @hash[val] += 1
     # end
     # p @hash
-  end
-
-  def minimax
-    uphash = {}
-    @possible_scores.each do |key, val|
-      hash = Hash.new(0)
-      val.each_value do |value|
-        hash[value] += 1
-      end
-      uphash[key] = hash.values.max
-    end
-    uphash.key(uphash.values.min)
   end
 
   def play_game
@@ -117,22 +107,44 @@ class Game
   end
 
   def reduce_sets
-    diminished_peg_sets = []
-    @all_peg_sets.each do |set|
-      if (
-        peg_check(@board[@round_count - 2][0], set) == 
-        @board[@round_count - 2][1]
-      )
-      diminished_peg_sets.push(@board[@round_count - 2][0])
+    matching_sets = []
+    @possible_peg_sets.keep_if do |peg_set|
+      peg_check(@board[@round_count - 2][0], peg_set) ==
+      @board[@round_count - 2][1]
+    end
+    p @possible_peg_sets
+  end
+
+  def minimax
+    minimaxed_guesses = {}
+    maximized_guesses = {}
+    @possible_scores.each do |peg_set, answer|
+      hash = Hash.new(0)
+      answer.each_value do |score|
+        hash[score] += 1
+      end
+      maximized_guesses[peg_set] = hash.values.max
+    end
+    maximized_guesses.each do |peg_set, max_remaining|
+      if maximized_guesses.values.min == max_remaining
+        minimaxed_guesses[peg_set] = max_remaining
       end
     end
-    @possible_peg_sets = diminished_peg_sets
-    p @possible_peg_sets.length
+    minimaxed_guesses
   end
 
   def computer_play
-    @possible_peg_sets = @all_peg_sets.dup
-    @possible_scores = @all_scores.dup
-    
+    @possible_scores.delete(@board[@round_count - 2][0])
+    reduce_sets
+    input = ""
+    best_guesses = minimax
+    intersection = @possible_peg_sets & best_guesses.keys
+    if intersection != []
+      input = intersection[0]
+    else
+      input = best_guesses[0]
+    end
+    input
+    # binding.pry
   end
 end

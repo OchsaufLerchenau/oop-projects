@@ -75,9 +75,9 @@ module Operations
     to_check_counts.each_key do |color|
       if pattern_counts[color]
         if pattern_counts[color] >= to_check_counts[color]
-          to_check_counts[color].times { arr.push("white") }
+          to_check_counts[color].times { arr.push("W") }
         elsif pattern_counts[color] < to_check_counts[color]
-          pattern_counts[color].times { arr.push("white") }
+          pattern_counts[color].times { arr.push("W") }
         end
       end
     end
@@ -88,7 +88,7 @@ module Operations
     4.times do |i|
       if pattern[i] == to_check[i]
         arr.pop
-        arr.unshift("black")
+        arr.unshift("B")
       end
     end
     arr

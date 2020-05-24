@@ -5,4 +5,4 @@ load 'game.rb'
 player = Player.new("Player")
 computer = Player.new("Computer")
 game = Game.new(player, computer)
-game.minimax
+game.play_game
